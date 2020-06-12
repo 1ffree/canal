@@ -1,13 +1,16 @@
 package com.alibaba.otter.canal.deployer;
 
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import com.alibaba.otter.canal.common.zookeeper.running.*;
+import org.I0Itec.zkclient.IZkDataListener;
 import org.I0Itec.zkclient.IZkStateListener;
 import org.I0Itec.zkclient.exception.ZkNoNodeException;
 import org.I0Itec.zkclient.exception.ZkNodeExistsException;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.Watcher.Event.KeeperState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +19,6 @@ import org.slf4j.MDC;
 import com.alibaba.otter.canal.common.utils.AddressUtils;
 import com.alibaba.otter.canal.common.zookeeper.ZkClientx;
 import com.alibaba.otter.canal.common.zookeeper.ZookeeperPathUtils;
-import com.alibaba.otter.canal.common.zookeeper.running.ServerRunningData;
-import com.alibaba.otter.canal.common.zookeeper.running.ServerRunningListener;
-import com.alibaba.otter.canal.common.zookeeper.running.ServerRunningMonitor;
-import com.alibaba.otter.canal.common.zookeeper.running.ServerRunningMonitors;
 import com.alibaba.otter.canal.deployer.InstanceConfig.InstanceMode;
 import com.alibaba.otter.canal.deployer.monitor.InstanceAction;
 import com.alibaba.otter.canal.deployer.monitor.InstanceConfigMonitor;
@@ -143,6 +142,12 @@ public class CanalController {
             // 初始化系统目录
             zkclientx.createPersistent(ZookeeperPathUtils.DESTINATION_ROOT_NODE, true);
             zkclientx.createPersistent(ZookeeperPathUtils.CANAL_CLUSTER_ROOT_NODE, true);
+        }
+        
+        String maxNum = getProperty(properties, CanalConstants.CANAL_GLOBAL_MAX_INSTANCE);
+        if (StringUtils.isNotEmpty(maxNum)) {
+           int num = Integer.valueOf(maxNum);
+           ServerRunningMonitors.initCounter(num);
         }
 
         final ServerRunningData serverData = new ServerRunningData(registerIp + ":" + port);

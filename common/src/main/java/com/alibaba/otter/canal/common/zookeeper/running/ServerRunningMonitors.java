@@ -34,4 +34,24 @@ public class ServerRunningMonitors {
         ServerRunningMonitors.runningMonitors = runningMonitors;
     }
 
+    private static int maxNum = 5;
+    private static int count = 0;
+
+    public synchronized static void initCounter(int maxNum) {
+        ServerRunningMonitors.count = 0;
+        ServerRunningMonitors.maxNum = maxNum;
+    }
+
+    public synchronized static boolean increaseCounter() {
+        if(count >= maxNum){
+            return false;
+        }
+        count++;
+        return true;
+    }
+    public synchronized static boolean decreaseCounter() {
+        count--;
+        return true;
+    }
+
 }

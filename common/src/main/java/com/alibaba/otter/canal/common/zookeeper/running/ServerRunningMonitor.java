@@ -140,6 +140,9 @@ public class ServerRunningMonitor extends AbstractCanalLifeCycle {
             return;
         }
 
+        if(!ServerRunningMonitors.increaseCounter()){
+            return;
+        }
         String path = ZookeeperPathUtils.getDestinationServerRunning(destination);
         // 序列化
         byte[] bytes = JsonUtils.marshalToByte(serverData);
@@ -210,9 +213,9 @@ public class ServerRunningMonitor extends AbstractCanalLifeCycle {
             zkClient.delete(path);
             mutex.set(false);
             processActiveExit();
+            ServerRunningMonitors.decreaseCounter();
             return true;
         }
-
         return false;
     }
 

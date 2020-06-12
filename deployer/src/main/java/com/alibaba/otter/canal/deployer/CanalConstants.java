@@ -70,6 +70,9 @@ public class CanalConstants {
     public static final String CANAL_MQ_KAFKA_KERBEROS_KRB5FILEPATH = ROOT + "." + "mq.kafka.kerberos.krb5FilePath";
     public static final String CANAL_MQ_KAFKA_KERBEROS_JAASFILEPATH = ROOT + "." + "mq.kafka.kerberos.jaasFilePath";
 
+    //  2020.06.09  by mfchen
+    public static final String CANAL_GLOBAL_MAX_INSTANCE = ROOT + "." + GLOBAL_NAME + "." + "maxNum";
+
     public static String getInstanceModeKey(String destination) {
         return MessageFormat.format(INSTANCE_MODE_TEMPLATE, destination);
     }
